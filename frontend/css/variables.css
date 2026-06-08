@@ -1,0 +1,103 @@
+/* Epilogue (variable, Latin) — для англомовних/латинських текстів.
+   Self-hosted woff2 → працює офлайн і кешується service worker'ом.
+   unicode-range обмежує шрифт латиницею; кирилиця падає на системний шрифт. */
+@font-face {
+  font-family: 'Epilogue';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/assets/fonts/epilogue-latin-var.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  /* Акцент — indigo (за прикладом дизайну) */
+  --c-primary: #4f46e5;
+  --c-primary-dark: #4338ca;
+  --c-primary-light: #e0e7ff;
+  /* Поверхні: світло-сірий фон / білі картки */
+  --c-bg: #f1f1f1;
+  --c-surface: #ffffff;
+  --c-border: #ececec;
+  --c-text: #000000;
+  --c-text-muted: #6b7280;
+  --c-success: #16a34a;
+  --c-success-bg: #e7f6ec;
+  --c-danger: #ea580c;
+  --c-danger-bg: #fdebe0;
+  --c-warning: #d97706;
+  --c-warning-bg: #fef3c7;
+
+  /* М'якші заокруглення як на прикладах */
+  --radius-lg: 24px;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 1px 3px rgba(0, 0, 0, .06);
+  --shadow-lg: 0 12px 34px rgba(0, 0, 0, .12);
+
+  --sidebar-w: 284px;
+  --header-h: 64px;
+
+  /* Epilogue для англомовних/латинських текстів; системний стек — для кирилиці й решти */
+  --font-latin: 'Epilogue';
+  --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font: var(--font-latin), var(--font-system);
+
+  /* Скелетон-градієнт (для shimmer) */
+  --skeleton-base: #e6e6e6;
+  --skeleton-shine: #f4f4f4;
+
+  /* Сайдбар — чорний */
+  --sidebar-bg: #000000;
+  --sidebar-text: #a1a1aa;
+  --sidebar-hover: rgba(255, 255, 255, .08);
+  --sidebar-active-bg: #ffffff;
+  --sidebar-active-text: #000000;
+  --auth-bg: #000000;
+}
+
+/* Темна тема (ТЗ — налаштування інтерфейсу). Перемикається [data-theme] на <html>. */
+:root[data-theme="dark"] {
+  --c-primary: #818cf8;
+  --c-primary-dark: #6366f1;
+  --c-primary-light: #2a2a52;
+  --c-bg: #0a0a0a;
+  --c-surface: #161616;
+  --c-border: #262626;
+  --c-text: #f4f4f5;
+  --c-text-muted: #a1a1aa;
+  --c-success: #22c55e;
+  --c-success-bg: #14331f;
+  --c-danger: #fb923c;
+  --c-danger-bg: #3a230f;
+  --c-warning: #fbbf24;
+  --c-warning-bg: #3a2e10;
+
+  --shadow: 0 1px 3px rgba(0, 0, 0, .5), 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-lg: 0 12px 34px rgba(0, 0, 0, .6);
+
+  --skeleton-base: #1f1f1f;
+  --skeleton-shine: #2c2c2c;
+
+  --sidebar-bg: #000000;
+  --sidebar-text: #a1a1aa;
+  --sidebar-hover: rgba(255, 255, 255, .08);
+  --sidebar-active-bg: #ffffff;
+  --sidebar-active-text: #000000;
+  --auth-bg: #000000;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  font-size: 14px;
+  transition: background .25s ease, color .25s ease;
+}
+
+:lang(en),
+[lang|="en"] {
+  font-family: var(--font-latin), var(--font-system);
+}

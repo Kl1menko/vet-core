@@ -1,0 +1,28 @@
+{
+  "name": "vetcore",
+  "version": "0.1.0",
+  "description": "VetCore — ветеринарна CRM/ERP — Vanilla JS frontend + Node/Express + PostgreSQL",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "dev": "node --watch backend/src/server.js",
+    "db:migrate": "node backend/scripts/migrate.js",
+    "db:seed": "node backend/scripts/seed.js",
+    "db:reset": "node backend/scripts/migrate.js --drop && node backend/scripts/seed.js",
+    "test": "node --test backend/test/*.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "pdfkit": "^0.19.0",
+    "pg": "^8.12.0",
+    "ws": "^8.21.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

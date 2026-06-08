@@ -1,0 +1,13 @@
+{
+  "name": "VetCore — CRM ветклініки",
+  "short_name": "VetCore",
+  "description": "CRM/ERP для ветеринарної клініки",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "lang": "uk",
+  "icons": [
+    { "src": "/assets/images/logo-vetcore.png", "sizes": "1254x1254", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
