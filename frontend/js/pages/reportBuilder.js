@@ -116,7 +116,7 @@ export function renderReportBuilder(root) {
       const opSel = el('select', { class: 'input', onChange: (e) => { f.op = e.target.value; } },
         OPS.map(([k, lbl]) => el('option', { value: k, selected: k === f.op }, lbl)));
       const valInput = el('input', { class: 'input', value: f.value || '', placeholder: 'значення', onInput: (e) => { f.value = e.target.value; } });
-      const del = el('button', { class: 'btn btn-ghost btn-sm', title: 'Прибрати', onClick: () => { state.filters.splice(idx, 1); renderFilters(box, def); } }, '✕');
+    const del = el('button', { class: 'btn btn-danger btn-sm', title: 'Прибрати', onClick: () => { state.filters.splice(idx, 1); renderFilters(box, def); } }, '✕');
       box.append(el('div', { class: 'field-row', style: 'margin-bottom:6px' }, [fieldSel, opSel, valInput, del]));
     });
     if (Object.keys(def.filters).length) {

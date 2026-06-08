@@ -76,7 +76,7 @@ function rowActions(patient, reload) {
       ? el('button', { class: 'btn btn-ghost row-action-btn', title: 'Редагувати', 'aria-label': 'Редагувати пацієнта', onClick: () => openPatientForm(patient, null, reload) }, [icon('edit', { size: 17 })])
       : null,
     can('patients.delete')
-      ? el('button', { class: 'btn btn-ghost row-action-btn row-action-btn--danger', title: 'Архівувати', 'aria-label': 'Архівувати пацієнта', onClick: async () => {
+      ? el('button', { class: 'btn row-action-btn row-action-btn--danger', title: 'Архівувати', 'aria-label': 'Архівувати пацієнта', onClick: async () => {
           if (await confirmDialog({ title: 'Архівувати пацієнта?', message: patient.name, danger: true, okText: 'Архівувати' })) {
             try { await PatientService.remove(patient.id); Toast.success('Готово'); reload(); }
             catch (err) { Toast.fromError(err); }

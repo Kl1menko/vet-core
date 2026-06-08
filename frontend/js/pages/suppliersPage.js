@@ -31,7 +31,7 @@ export function renderSuppliersPage(root) {
       { title: 'Email', render: (s) => s.email || '—' },
       { title: '', width: '120px', render: (s) => can('warehouse.manage') ? el('div', { class: 'row-actions' }, [
         el('button', { class: 'btn btn-ghost btn-sm', title: 'Редагувати', onClick: () => openForm(s, reload) }, [icon('edit', { size: 15 })]),
-        el('button', { class: 'btn btn-ghost btn-sm', title: 'Видалити', onClick: async () => {
+        el('button', { class: 'btn btn-danger btn-sm', title: 'Видалити', onClick: async () => {
           if (await confirmDialog({ title: 'Видалити?', message: s.name, danger: true, okText: 'Видалити' })) {
             try { await SupplierService.remove(s.id); Toast.success('Видалено'); reload(); } catch (e) { Toast.fromError(e); }
           }

@@ -48,7 +48,7 @@ export function renderPricePage(root) {
       { title: 'Ціна', render: (s) => el('strong', {}, money(s.price)) },
       { title: '', width: '120px', render: (s) => can('finance.manage') ? el('div', { class: 'row-actions' }, [
         el('button', { class: 'btn btn-ghost btn-sm', title: 'Редагувати', onClick: () => openForm(s, reload) }, [icon('edit', { size: 15 })]),
-        el('button', { class: 'btn btn-ghost btn-sm', title: 'Видалити', onClick: () => del(s, reload) }, [icon('trash', { size: 15 })]),
+        el('button', { class: 'btn btn-danger btn-sm', title: 'Видалити', onClick: () => del(s, reload) }, [icon('trash', { size: 15 })]),
       ]) : null },
     ], state.items, { loading: state.loading, emptyText: emptyState({ icon: 'price', title: 'Прайс порожній', hint: 'Додайте послуги або імпортуйте з CSV',
       action: can('finance.manage') ? { label: '+ Послуга', onClick: () => openForm(null, reload) } : null }) }));

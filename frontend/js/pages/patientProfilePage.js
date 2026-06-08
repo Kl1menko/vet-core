@@ -105,7 +105,7 @@ function vaccinationsTab(p) {
           ].filter(Boolean).join('')),
         ]),
         canEdit ? el('button', { class: 'btn btn-ghost btn-sm', title: 'Редагувати', onClick: () => openVaccinationForm(p, v, loadVacc) }, [icon('edit', { size: 15 })]) : null,
-        canEdit ? el('button', { class: 'btn btn-ghost btn-sm', title: 'Видалити', onClick: async () => {
+        canEdit ? el('button', { class: 'btn btn-danger btn-sm', title: 'Видалити', onClick: async () => {
           if (await confirmDialog({ title: 'Видалити вакцинацію?', message: v.vaccine_name, danger: true, okText: 'Видалити' })) {
             try { await VaccinationService.remove(v.id); Toast.success('Видалено'); loadVacc(); } catch (e) { Toast.fromError(e); }
           }
@@ -210,7 +210,7 @@ function filesTab(patient) {
             el('div', { class: 'muted', style: 'font-size:12px' },
               `${catLabel(f.category)} · ${(Number(f.file_size) / 1024).toFixed(0)} КБ · ${fmtDate(f.created_at)}`),
           ]),
-          can('patients.edit') ? el('button', { class: 'btn btn-ghost btn-sm', title: 'Видалити', onClick: async () => {
+          can('patients.edit') ? el('button', { class: 'btn btn-danger btn-sm', title: 'Видалити', onClick: async () => {
             try { await FileService.remove(f.id); Toast.success('Видалено'); loadFiles(); } catch (e) { Toast.fromError(e); }
           } }, [icon('trash', { size: 15 })]) : null,
         ]));

@@ -1,5 +1,5 @@
 import { el, clear, esc } from '../utils/dom.js';
-import { CalendarService, UserService, OwnerService, PriceService, AppointmentService } from '../services/index.js';
+import { CalendarService, UserService, OwnerService, PatientService, PriceService, AppointmentService } from '../services/index.js';
 import { openModal, confirmDialog } from '../components/modal.js';
 import { buildForm } from '../components/form.js';
 import { Toast } from '../components/toast.js';
@@ -296,6 +296,8 @@ export async function openEventForm(ev, startAt, onSaved) {
       options: [{ value: '', label: '— не обрано —' }, ...doctors.map((d) => ({ value: d.id, label: fullName(d) }))] },
     { name: 'ownerId', label: 'Власник', type: 'select', value: ev?.owner_id || '', full: true,
       options: [{ value: '', label: '— не обрано —' }, ...ownersRes.items.map((o) => ({ value: o.id, label: `${fullName(o)} · ${o.phone || ''}` }))] },
+    { name: 'patientId', label: 'Пацієнт', type: 'select', value: ev?.patient_id || '', full: true,
+      options: [{ value: '', label: ev?.owner_id ? 'Завантаження пацієнтів…' : 'Спочатку оберіть власника' }] },
     { name: 'startAt', label: 'Початок', type: 'datetime-local', required: true, value: toLocal(start) },
     { name: 'durationMinutes', label: 'Тривалість', type: 'select', required: true, value: durationMinutes,
       options: durationSlots() },
@@ -304,15 +306,16 @@ export async function openEventForm(ev, startAt, onSaved) {
     submitText: isEdit ? 'Зберегти' : 'Створити',
     onCancel: () => ctrl.close(),
     onSubmit: async (values) => {
-      const { serviceId, ...eventValues } = values;
+      const { serviceId, durationMinutes: selectedDuration, ...eventValues } = values;
       const startDate = new Date(eventValues.startAt);
-      const duration = Number(eventValues.durationMinutes || 30);
+      const duration = Number(selectedDuration || 30);
       const payload = {
         ...eventValues,
         type: ev?.type || 'appointment',
         startAt: startDate.toISOString(),
         endAt: new Date(startDate.getTime() + duration * 60000).toISOString(),
         ownerId: values.ownerId || null,
+        patientId: values.patientId || null,
         doctorId: values.doctorId || null,
       };
       try {
@@ -325,6 +328,7 @@ export async function openEventForm(ev, startAt, onSaved) {
             try {
               const appt = await AppointmentService.create({
                 ownerId: payload.ownerId,
+                patientId: payload.patientId,
                 doctorId: payload.doctorId,
                 calendarEventId: event.id,
               });
@@ -341,6 +345,34 @@ export async function openEventForm(ev, startAt, onSaved) {
       } catch (err) { if (err?.fields) throw err; Toast.fromError(err); }
     },
   });
+
+  const ownerSelect = form.querySelector('#f_ownerId');
+  const patientSelect = form.querySelector('#f_patientId');
+  const loadOwnerPatients = async (ownerId, selectedId = '') => {
+    if (!patientSelect) return;
+    patientSelect.replaceChildren(el('option', { value: '' }, ownerId ? 'Завантаження пацієнтів…' : 'Спочатку оберіть власника'));
+    patientSelect.disabled = true;
+    if (!ownerId) return;
+    try {
+      const res = await PatientService.list({ ownerId, limit: 100 });
+      const patients = res.items || [];
+      if (!patients.length) {
+        patientSelect.replaceChildren(el('option', { value: '' }, 'У власника немає тварин'));
+        return;
+      }
+      const value = selectedId || (patients.length === 1 ? patients[0].id : '');
+      patientSelect.replaceChildren(
+        el('option', { value: '' }, patients.length === 1 ? '— не обрано —' : 'Оберіть тварину'),
+        ...patients.map((p) => el('option', { value: p.id, selected: p.id === value }, [p.name, p.species ? ` · ${p.species}` : '', p.breed ? ` · ${p.breed}` : ''].join(''))),
+      );
+      patientSelect.value = value;
+      patientSelect.disabled = false;
+    } catch (e) {
+      patientSelect.replaceChildren(el('option', { value: '' }, 'Не вдалося завантажити тварин'));
+    }
+  };
+  ownerSelect?.addEventListener('change', () => loadOwnerPatients(ownerSelect.value));
+  if (ownerSelect?.value) loadOwnerPatients(ownerSelect.value, ev?.patient_id || '');
 
   const ctrl = openModal({ title: isEdit ? 'Редагувати запис' : 'Новий запис', body: form, wide: true });
 }

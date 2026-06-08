@@ -181,7 +181,7 @@ async function templatesTab(root) {
           el('div', {}, [el('strong', {}, t.name), el('span', { class: 'badge badge-blue', style: 'margin-left:8px' }, tplLabel(t.type))]),
           can('settings.manage') ? el('div', { class: 'row-actions' }, [
             el('button', { class: 'btn btn-ghost btn-sm', title: 'Редагувати', onClick: () => openTplForm(t, () => load()) }, [icon('edit', { size: 15 })]),
-            el('button', { class: 'btn btn-ghost btn-sm', title: 'Видалити', onClick: async () => {
+            el('button', { class: 'btn btn-danger btn-sm', title: 'Видалити', onClick: async () => {
               if (await confirmDialog({ title: 'Видалити шаблон?', message: t.name, danger: true, okText: 'Видалити' })) {
                 try { await TemplateService.remove(t.id); Toast.success('Видалено'); load(); } catch (e) { Toast.fromError(e); }
               }

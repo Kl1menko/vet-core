@@ -80,7 +80,7 @@ function rowActions(owner, reload) {
       ? el('button', { class: 'btn btn-ghost btn-sm', title: 'Редагувати', onClick: () => openOwnerForm(owner, reload) }, [icon('edit', { size: 15 })])
       : null,
     can('owners.delete')
-      ? el('button', { class: 'btn btn-ghost btn-sm', title: 'Архівувати', onClick: async () => {
+      ? el('button', { class: 'btn btn-danger btn-sm', title: 'Архівувати', onClick: async () => {
           if (await confirmDialog({ title: 'Архівувати власника?', message: fullName(owner), danger: true, okText: 'Архівувати' })) {
             try { await OwnerService.remove(owner.id); Toast.success('Готово', 'Власника архівовано'); reload(); }
             catch (err) { Toast.fromError(err); }

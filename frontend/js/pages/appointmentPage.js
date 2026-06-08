@@ -62,7 +62,7 @@ function doctorsBlock(a, editable, reload) {
       el('span', { class: 'badge badge-gray', style: 'margin-left:8px' }, ({ assistant: 'асистент', consultant: 'консультант', main: 'основний' })[d.role] || d.role),
       Number(d.salary_percent) ? el('span', { class: 'muted', style: 'margin-left:8px' }, `${Number(d.salary_percent)}% ЗП`) : null,
     ]),
-    editable && can('appointments.edit') ? el('button', { class: 'btn btn-ghost btn-sm', title: 'Прибрати', onClick: async () => {
+    editable && can('appointments.edit') ? el('button', { class: 'btn btn-danger btn-sm', title: 'Прибрати', onClick: async () => {
       try { await AppointmentService.removeDoctor(a.id, d.id); Toast.success('Прибрано'); reload(); } catch (e) { Toast.fromError(e); }
     } }, [icon('close', { size: 14 })]) : null,
   ])));
@@ -245,7 +245,7 @@ function itemsBlock(a, editable, reload) {
         el('div', { style: 'display:flex;gap:10px;align-items:center' }, [
           el('strong', {}, money(it.total)),
           editable && it.kind === 'Послуга' && can('appointments.edit')
-            ? el('button', { class: 'btn btn-ghost btn-sm', title: 'Видалити', onClick: async () => {
+            ? el('button', { class: 'btn btn-danger btn-sm', title: 'Видалити', onClick: async () => {
                 try { await AppointmentService.removeService(a.id, it.id); Toast.success('Видалено'); reload(); }
                 catch (err) { Toast.fromError(err); }
               } }, [icon('close', { size: 14 })]) : null,

@@ -290,6 +290,11 @@ input[type='search']::-webkit-search-cancel-button { -webkit-appearance: none; }
   border-color: var(--c-primary);
   background: var(--c-primary-light);
 }
+.row-action-btn--danger {
+  color: var(--c-danger);
+  border-color: var(--c-danger);
+  background: var(--c-danger-bg);
+}
 .row-action-btn--danger:hover:not(:disabled) {
   color: var(--c-danger);
   border-color: var(--c-danger);
