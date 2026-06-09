@@ -7,14 +7,21 @@ const { Pool } = pg;
 // pg type OID 1700 = NUMERIC.
 pg.types.setTypeParser(1700, (val) => (val === null ? null : val));
 
+const shouldUseSsl = env.pg.ssl
+  ? !['0', 'false', 'disable'].includes(String(env.pg.ssl).toLowerCase())
+  : Boolean(env.databaseUrl && env.nodeEnv === 'production');
+
+const sslConfig = shouldUseSsl ? { rejectUnauthorized: false } : undefined;
+
 const poolConfig = env.databaseUrl
-  ? { connectionString: env.databaseUrl }
+  ? { connectionString: env.databaseUrl, ...(sslConfig ? { ssl: sslConfig } : {}) }
   : {
       host: env.pg.host,
       port: env.pg.port,
       database: env.pg.database,
       user: env.pg.user,
       password: env.pg.password,
+      ...(sslConfig ? { ssl: sslConfig } : {}),
     };
 
 export const pool = new Pool({

@@ -17,6 +17,7 @@ export const env = {
     database: process.env.PGDATABASE || 'vetcore',
     user: process.env.PGUSER || undefined,
     password: process.env.PGPASSWORD || undefined,
+    ssl: process.env.PGSSL || process.env.POSTGRES_SSL || null,
   },
 
   jwt: {
