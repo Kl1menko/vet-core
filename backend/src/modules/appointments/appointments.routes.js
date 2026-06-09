@@ -15,10 +15,12 @@ appointmentsRouter.use(authMiddleware);
 
 const SELECT = `
   SELECT a.*,
+         ce.start_at AS calendar_start_at, ce.end_at AS calendar_end_at,
          o.first_name AS owner_first_name, o.last_name AS owner_last_name, o.phone AS owner_phone,
          p.name AS patient_name, p.species AS patient_species,
          d.first_name AS doctor_first_name, d.last_name AS doctor_last_name
     FROM appointments a
+    LEFT JOIN calendar_events ce ON ce.id = a.calendar_event_id
     LEFT JOIN owners o ON o.id = a.owner_id
     LEFT JOIN patients p ON p.id = a.patient_id
     LEFT JOIN users d ON d.id = a.doctor_id`;
@@ -46,13 +48,16 @@ appointmentsRouter.get(
     if (req.query.status) { params.push(req.query.status); where += ` AND a.status=$${params.length}`; }
     if (req.query.date) {
       params.push(req.query.date);
-      where += ` AND date(COALESCE(a.started_at, a.created_at)) = $${params.length}`;
+      where += ` AND date(COALESCE(a.started_at, ce.start_at, a.created_at)) = $${params.length}`;
     }
 
-    const total = (await query(`SELECT count(*) FROM appointments a ${where}`, params)).rows[0].count;
+    const total = (await query(
+      `SELECT count(*) FROM appointments a LEFT JOIN calendar_events ce ON ce.id = a.calendar_event_id ${where}`,
+      params,
+    )).rows[0].count;
     params.push(limit, offset);
     const { rows } = await query(
-      `${SELECT} ${where} ORDER BY a.created_at DESC LIMIT $${params.length - 1} OFFSET $${params.length}`,
+      `${SELECT} ${where} ORDER BY COALESCE(ce.start_at, a.started_at, a.created_at) DESC LIMIT $${params.length - 1} OFFSET $${params.length}`,
       params,
     );
     ok(res, { items: rows, meta: paginationMeta(total, page, limit) });

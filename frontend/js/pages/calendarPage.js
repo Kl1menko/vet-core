@@ -323,20 +323,25 @@ export async function openEventForm(ev, startAt, onSaved) {
           await CalendarService.update(ev.id, payload);
         } else {
           const event = await CalendarService.create(payload);
-          // Якщо обрано послугу — створюємо прив'язаний appointment з цією послугою.
-          if (serviceId && payload.ownerId && payload.type === 'appointment') {
+          // Для запису типу «прийом» з власником завжди створюємо прив'язаний
+          // appointment (ТЗ §13.1) — інакше запис не зʼявиться у «Прийомах».
+          if (payload.ownerId && payload.type === 'appointment') {
             try {
               const appt = await AppointmentService.create({
                 ownerId: payload.ownerId,
                 patientId: payload.patientId,
                 doctorId: payload.doctorId,
                 calendarEventId: event.id,
+                reason: payload.title || null,
               });
-              const svc = services.find((s) => s.id === serviceId);
-              if (svc) await AppointmentService.addService(appt.id, {
-                serviceId: svc.id, name: svc.name, price: Number(svc.price), quantity: 1,
-              });
-            } catch (e) { Toast.error('Запис створено', 'Але не вдалося додати послуги: ' + (e?.message || '')); }
+              // Якщо обрано послугу — одразу додаємо її до прийому.
+              if (serviceId) {
+                const svc = services.find((s) => s.id === serviceId);
+                if (svc) await AppointmentService.addService(appt.id, {
+                  serviceId: svc.id, name: svc.name, price: Number(svc.price), quantity: 1,
+                });
+              }
+            } catch (e) { Toast.error('Запис створено', 'Але не вдалося створити прийом: ' + (e?.message || '')); }
           }
         }
         Toast.success(isEdit ? 'Збережено' : 'Запис створено');

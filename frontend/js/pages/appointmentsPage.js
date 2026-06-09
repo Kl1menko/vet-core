@@ -30,7 +30,7 @@ export function renderAppointmentsPage(root) {
   function render() {
     clear(container);
     const table = renderTable([
-      { title: 'Дата', render: (a) => fmtDateTime(a.started_at || a.created_at) },
+      { title: 'Дата', render: (a) => fmtDateTime(a.calendar_start_at || a.started_at || a.created_at) },
       { title: 'Пацієнт', render: (a) => a.patient_name || '—' },
       { title: 'Власник', render: (a) => fullName({ first_name: a.owner_first_name, last_name: a.owner_last_name }) },
       { title: 'Лікар', render: (a) => fullName({ first_name: a.doctor_first_name, last_name: a.doctor_last_name }) },
